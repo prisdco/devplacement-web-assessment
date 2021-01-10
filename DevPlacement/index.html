@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>DashBoard</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        .searchBox {
+            background-image: url('images/images.jpg');
+            background-repeat: no-repeat;
+            padding: 15px 15px 15px 60px;
+            border-radius: 3px;
+            font-weight: 400;
+            border: 1px solid #0a2742;
+            color: #FFF;
+            width: 400px;
+            background-color: #0d2e4d;
+        } 
+    </style>
+    <script language="javascript">
+        $(document).ready(function () {
+
+            var mes = $("#mes").val();
+            if (mes != null) {
+                alert(mes);
+            }
+            loadrec();
+            $(".srch").keyup(function () {
+
+                var srch = $(".srch").val();
+                if (srch != "" && srch.toLowerCase().length > 3) {
+                    
+                    $.post("../pubs/server.php", { opCode: "VIEWUSERS", srch: srch }, function (data) {
+                        if (data != "")
+                            $(".content").html(data);
+
+                        $(".srch").css("background", "url(../img/done.png) no-repeat right").css("background-color", "#ffffff");
+                    });
+                }
+                else if (srch == "") {
+                    
+                    $.post("../pubs/server.php", { opCode: "VIEWUSERS", srch: srch }, function (data) {
+                        if (data != "")
+                            $(".content").html(data);
+                        $(".srch").css("background", "url(../img/done.png) no-repeat right").css("background-color", "#ffffff");
+                    });
+                }
+            });
+
+        });
+    </script>
+</head>
+<body  style="background-color: #111">
+    <div class="container" style="width: 70%; margin-top: 8%; background-color: #0a2742">
+        <div class="row">
+
+            <div class="col-sm-6" style="height: 500px;">
+                <div class="row" style=" margin: 10%;padding: 10px;">
+                    <h2 style="color: #efe6e6; ">Hello, </h2>
+                    <p style="color: #efe6e6;">Welcome to your dashboard. Kindly sort through user base</p>
+                    <div style="padding: 14px;">
+                    <input type="text" class="searchBox" placeholder="Find a user..."
+       onsubmit="return false" name="srch">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6" style="background-color: #ffffff; border-radius: 5px; padding: 20px; height: 500px">
+                <h3>Column 2</h3>
+                <p>Lorem ipsum dolor..</p>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
