@@ -154,9 +154,9 @@ namespace DevPlacement.Models
         public string version { get; set; }
     }
 
-    public class err
-    { 
+    public class TransationStatus
+    {
         public string status { get; set; }
-        public string message { get; set; }
+        public object Results { get; set; }
     }
 }

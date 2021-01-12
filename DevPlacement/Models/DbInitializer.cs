@@ -14,11 +14,11 @@ namespace DevPlacement.Models
             {
                 new users { gender = "Male", phone = "08037002523", email = "prisdco@gmail.com", cell = "0904512333", nat = "NG" },
 
-                new users { gender = "Male", phone = "08035712523", email = "bola@gmail.com", cell = "09012597733", nat = "NG" },
+                new users { gender = "Male", phone = "08035712523", email = "bola@gmail.com", cell = "09012597733", nat = "US" },
 
-                new users { gender = "Female", phone = "08052112523", email = "titi@gmail.com", cell = "09027200733", nat = "NG" },
+                new users { gender = "Female", phone = "08052112523", email = "titi@gmail.com", cell = "09027200733", nat = "GER" },
 
-                new users { gender = "Female", phone = "08099112523", email = "olamide@gmail.com", cell = "09021067833", nat = "NG" }
+                new users { gender = "Female", phone = "08099112523", email = "olamide@gmail.com", cell = "09021067833", nat = "UK" }
             };
 
             user.ForEach(s => context.Users.Add(s));
@@ -27,16 +27,16 @@ namespace DevPlacement.Models
             List<Location> loc = new List<Location>
             {
                 new Location { locID = 1, city = "Abuja", country = "Nigeria", postcode = 900001, state = "FCT Abuja",  userID = 1 },
-                new Location { locID = 2, city = "Ibadan", country = "Nigeria", postcode = 32001, state = "Oyo", userID = 2 },
-                new Location { locID = 3, city = "Osun", country = "Nigeria", postcode = 902101, state = "Osogbo", userID = 3 },
-                new Location { locID = 4, city = "Lagos", country = "Nigeria", postcode = 310201, state = "Lagos", userID = 4 }
+                new Location { locID = 2, city = "Ibadan", country = "USA", postcode = 32001, state = "Oyo", userID = 2 },
+                new Location { locID = 3, city = "Osun", country = "Germany", postcode = 902101, state = "Osogbo", userID = 3 },
+                new Location { locID = 4, city = "Lagos", country = "Britain", postcode = 310201, state = "Lagos", userID = 4 }
             };
             loc.ForEach(s => context.Locations.Add(s));
             context.SaveChanges();
 
             List<BioName> bioname = new List<BioName>
             {
-                new BioName { nameID = 1, first = "Oluwafemi", last = "Ölajire", title = "Mr", userID = 1 },
+                new BioName { nameID = 1, first = "Oluwafemi", last = "Olajire", title = "Mr", userID = 1 },
                 new BioName { nameID = 2, first = "Bolarinwa", last = "Ayodeji", title = "Mr", userID = 2 },
                 new BioName { nameID = 3, first = "Titi", last = "Asegun", title = "Mr", userID = 3 },
                 new BioName { nameID = 4, first = "Olamide", last = "Olatunji", title = "Mr", userID = 4 }
@@ -95,10 +95,10 @@ namespace DevPlacement.Models
 
             List<Picture> pic = new List<Picture>
             {
-                new Picture { picID = 1, large = "https://randomuser.me/api/portraits/men/96.jpg", medium = "https://randomuser.me/api/portraits/med/men/96.jpg", thumbnail = "https://randomuser.me/api/portraits/thumb/men/96.jpg", userID = 1 },
-                new Picture { picID = 2, large = "https://randomuser.me/api/portraits/men/96.jpg", medium = "https://randomuser.me/api/portraits/med/men/96.jpg", thumbnail = "https://randomuser.me/api/portraits/thumb/men/96.jpg", userID = 2 },
-                new Picture { picID = 3, large = "https://randomuser.me/api/portraits/men/96.jpg", medium = "https://randomuser.me/api/portraits/med/men/96.jpg", thumbnail = "https://randomuser.me/api/portraits/thumb/men/96.jpg", userID = 3 },
-                new Picture { picID = 4, large = "https://randomuser.me/api/portraits/men/96.jpg", medium = "https://randomuser.me/api/portraits/med/men/96.jpg", thumbnail = "https://randomuser.me/api/portraits/thumb/men/96.jpg", userID = 4 }
+                new Picture { picID = 1, large = "https://localhost:44326/images/male1.jpg", medium = "https://localhost:44326/images/male1.jpg", thumbnail = "https://localhost:44326/images/male1.jpg", userID = 1 },
+                new Picture { picID = 2, large = "https://localhost:44326/images/male2.jpg", medium = "https://localhost:44326/images/male2.jpg", thumbnail = "https://localhost:44326/images/male2.jpg", userID = 2 },
+                new Picture { picID = 3, large = "https://localhost:44326/images/female1.jpg", medium = "https://localhost:44326/images/female1.jpg", thumbnail = "https://localhost:44326/images/female1.jpg", userID = 3 },
+                new Picture { picID = 4, large = "https://localhost:44326/images/female2.jpg", medium = "https://localhost:44326/images/female2.jpg", thumbnail = "https://localhost:44326/images/female2.jpg", userID = 4 }
             };
             pic.ForEach(s => context.Pictures.Add(s));
             context.SaveChanges();

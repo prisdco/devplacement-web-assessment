@@ -8,69 +8,425 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         .searchBox {
-            background-image: url('images/images.jpg');
-            background-repeat: no-repeat;
             padding: 15px 15px 15px 60px;
             border-radius: 3px;
+            
+        }
+
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 80%;
+        }
+
+        .btn {
+            background-color: DodgerBlue; /* Blue background */
+            border: none; /* Remove borders */
+            color: white; /* White text */
+            padding: 20px 30px; /* Some padding */
+            font-size: 16px; /* Set a font size */
+            cursor: pointer; /* Mouse pointer on hover */
+        }
+
+            /* Darker background on mouse-over */
+            .btn:hover {
+                background-color: RoyalBlue;
+            }
+
+        .textbox {
+            width: 100%;
+            padding: 12px 40px;
+            margin: 8px 0;
+            border-radius: 3px;
+            display: inline-block;
             font-weight: 400;
             border: 1px solid #0a2742;
             color: #FFF;
-            width: 400px;
             background-color: #0d2e4d;
-        } 
+            box-sizing: border-box;
+        }
+
+        .topsecondpanel {
+            border-radius: 20px;
+            background-color: #efe6e6;
+            border: 1px solid #efe6e6;
+            color: #1b1616
+        }
+
+        .fontuser {
+            position: relative;
+        }
+
+        .fontuser i {
+                position: absolute;
+                left: 15px;
+                top: 40px;
+                color: gray;
+        }
+
+       
+
     </style>
     <script language="javascript">
         $(document).ready(function () {
 
-            var mes = $("#mes").val();
-            if (mes != null) {
-                alert(mes);
-            }
-            loadrec();
-            $(".srch").keyup(function () {
+            
+            var response = $('#response');
 
-                var srch = $(".srch").val();
-                if (srch != "" && srch.toLowerCase().length > 3) {
-                    
-                    $.post("../pubs/server.php", { opCode: "VIEWUSERS", srch: srch }, function (data) {
-                        if (data != "")
-                            $(".content").html(data);
+            $.ajax({
 
-                        $(".srch").css("background", "url(../img/done.png) no-repeat right").css("background-color", "#ffffff");
+                type: 'Get',
+                url: 'api/users/GetUsers',
+                dataType: 'json',
+                success: function (data) {
+                    response.empty();
+
+                    response.append('<div class="row" style="padding: 10px;">'
+                        + '<div class= "col-lg-12"><h3 style="font-weight:700">All Users</h3>'
+                        + '<p style = "color:#808080; font-size:8pt">Filter by</p>'
+                        + '</div><div class="col-lg-12"><div class="col-lg-6" style="padding:0px">'
+                        + '<div class= "fontuser"><input type="text" id="Ssrch" class="textbox topsecondpanel" placeholder="Find a User">'
+                        + '<i style = "top: 20px" class= "fa fa-search fa-lg"></i>'
+                        + '</div></div><div class="col-lg-3">'
+                        + '<select class="textbox topsecondpanel" onChange="loadusercountry()" id="country"><option>NG</option><option>US</option><option>GER</option><option>UK</option></select>'
+                        + '</div>'
+                        + '<div class= "col-lg-3"></div></div>'
+                        + '</div>'
+                        + '<div class="container-fluid responsive" id="inner" style="height: 300px; overflow-y: scroll;">'
+
+
+                        + '</div>');
+                    var inner = $('#inner');
+                    $.each(data.Results, function (index, element) {
+
+                        inner.append('<div class="row" style=" background-color: #FFFFFF">'
+                            + '<div class="col-lg-3" style="padding:5px;">'
+                            + '<img src="' + element.pic.medium + '" height="100" width="120" alt="Paris" class="center" style="border-radius:50%; border:5px solid #68d1a3" />'
+                            + '</div>'
+                            + '<div class="col-lg-9">'
+                            + '<p><h3 style="font-weight:700; font-size:14pt">' + element.name.first + ' ' + element.name.last + '</h3></p>'
+                            + '<p><h5 style="font-family: tahoma; font-style:italic; color: #a09b9b;">' + element.location.street.number + ' ' + element.location.street.name + ', ' + element.location.city + ', ' + element.location.state + '</h5></p>'
+                            + '<div class="row" style="margin-right:1%; color: #a9a9a9;">'
+                            + '<span style="float:left; padding: 8px 15px"><i class="fa fa-envelope"></i>&nbsp;&nbsp;' + element.email + '</span> &nbsp;&nbsp; <span style="float:left;  padding: 8px 15px"><i class="fa fa-phone"></i>&nbsp;&nbsp;' + element.phone + '</span> &nbsp;&nbsp;'
+                            + '<span style="float:right;">'
+                            + '<button onclick="GetUser(' + element.userID + ')" class="btn" style="background-color: #68d1a3;border-radius:8px; padding: 8px 15px"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>'
+                            + '</span>'
+                            + '</div>'
+                            + '</div>'
+                            + '</div>'
+                            + '<br />'
+                        );
                     });
                 }
-                else if (srch == "") {
-                    
-                    $.post("../pubs/server.php", { opCode: "VIEWUSERS", srch: srch }, function (data) {
-                        if (data != "")
-                            $(".content").html(data);
-                        $(".srch").css("background", "url(../img/done.png) no-repeat right").css("background-color", "#ffffff");
-                    });
+
+            });
+
+            $(document).on({
+                ajaxStart: function () {
+                    showLoading();
+                },
+                ajaxStop: function () {
+                    hideLoading();
                 }
             });
 
+           
+                                 
+            $("#srch").keyup(function () {
+
+                var srch = $("#srch").val();
+                if (srch != "" && srch.toLowerCase().length > 2) {
+
+                    GetUser(srch);
+                    
+                }
+                else if (srch == "") {
+                    srch = "";
+                    GetUser(srch);
+                }
+            });
+
+            $(document).on('keyup', '#Ssrch', function (e) {  
+                var srch = $("#Ssrch").val();
+                if (srch != "" && srch.toLowerCase().length > 2) {
+
+                    GetUser(srch);
+
+                }
+                else if (srch == "") {
+                    srch = "";
+                    GetUser(srch);
+                }
+            });
+                       
+
         });
+
+        function GetUser(id) {
+           
+            var url = "";
+            if (id == "" || id == null) {
+
+                url = 'api/users/GetUsers/';
+            }
+            else {
+                url = 'api/users/GetUser/' + id;
+            }
+
+            $.ajax({
+
+                type: 'Get',
+                url: url,
+                dataType: 'json',
+                success: function (data) {                   
+                    var inner = $('#inner');
+                    inner.empty();
+                    $.each(data.Results, function (index, element) {
+
+                        inner.append('<div class="row" style=" background-color: #FFFFFF">'
+                            + '<div class="col-lg-3" style="padding:5px;">'
+                            + '<img src="' + element.pic.medium + '" height="100" width="120" alt="Paris" class="center" style="border-radius:50%; border:5px solid #68d1a3" />'
+                            + '</div>'
+                            + '<div class="col-lg-9">'
+                            + '<p><h3 style="font-weight:700; font-size:14pt">' + element.name.first + ' ' + element.name.last + '</h3></p>'
+                            + '<p><h5 style="font-family: tahoma; font-style:italic; color: #a09b9b;">' + element.location.street.number + ' ' + element.location.street.name + ', ' + element.location.city + ', ' + element.location.state + '</h5></p>'
+                            + '<div class="row" style="margin-right:1%; color: #a9a9a9;">'
+                            + '<span style="float:left; padding: 8px 15px"><i class="fa fa-envelope"></i>&nbsp;&nbsp;' + element.email + '</span> &nbsp;&nbsp; <span style="float:left;  padding: 8px 15px"><i class="fa fa-phone"></i>&nbsp;&nbsp;' + element.phone + '</span> &nbsp;&nbsp;'
+                            + '<span style="float:right;">'
+                            + '<button onclick="GetUser(' + element.userID + ')" class="btn" style="background-color: #68d1a3;border-radius:8px; padding: 8px 15px"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>'
+                            + '</span>'
+                            + '</div>'
+                            + '</div>'
+                            + '</div>'
+                            + '<br />'
+                        );
+                    });
+                }
+
+            })
+                        
+
+        }
+
+        function loadusercountry() {
+
+            var url = "";
+            var srch = $("#country").val();
+            if (srch == "" || srch == null) {
+
+                url = 'api/users/GetUsers/';
+            }
+            else {
+                url = 'api/users/GetUserCountry/' + srch;
+            }
+
+            $.ajax({
+
+                type: 'Get',
+                url: url,
+                dataType: 'json',
+                success: function (data) {
+                    var inner = $('#inner');
+                    inner.empty();
+                    $.each(data.Results, function (index, element) {
+
+                        inner.append('<div class="row" style=" background-color: #FFFFFF">'
+                            + '<div class="col-lg-3" style="padding:5px;">'
+                            + '<img src="' + element.pic.medium + '" height="100" width="120" alt="Paris" class="center" style="border-radius:50%; border:5px solid #68d1a3" />'
+                            + '</div>'
+                            + '<div class="col-lg-9">'
+                            + '<p><h3 style="font-weight:700; font-size:14pt">' + element.name.first + ' ' + element.name.last + '</h3></p>'
+                            + '<p><h5 style="font-family: tahoma; font-style:italic; color: #a09b9b;">' + element.location.street.number + ' ' + element.location.street.name + ', ' + element.location.city + ', ' + element.location.state + '</h5></p>'
+                            + '<div class="row" style="margin-right:1%; color: #a9a9a9;">'
+                            + '<span style="float:left; padding: 8px 15px"><i class="fa fa-envelope"></i>&nbsp;&nbsp;' + element.email + '</span> &nbsp;&nbsp; <span style="float:left;  padding: 8px 15px"><i class="fa fa-phone"></i>&nbsp;&nbsp;' + element.phone + '</span> &nbsp;&nbsp;'
+                            + '<span style="float:right;">'
+                            + '<button onclick="GetUser(' + element.userID + ')" class="btn" style="background-color: #68d1a3;border-radius:8px; padding: 8px 15px"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>'
+                            + '</span>'
+                            + '</div>'
+                            + '</div>'
+                            + '</div>'
+                            + '<br />'
+                        );
+                    });
+                }
+
+            })
+
+
+        }
+
+        function GetAllUsers(id) {
+
+            var url = "";
+            var headerT = "";
+            if (id == "" || id == null) {
+
+                url = 'api/users/GetUsers/';
+                headerT = "All Users";
+            }
+            else {
+                url = 'api/users/GetGenderUser/' + id;
+                headerT = "Users";
+            }
+
+            var response = $('#response');
+
+            $.ajax({
+
+                type: 'Get',
+                url: url,
+                dataType: 'json',
+                success: function (data) {
+                    response.empty();
+                    response.append('<div class="row" style="padding: 10px;">'
+                        + '<div class= "col-lg-12"><h3 style="font-weight:700">' + id + ' ' + headerT +'</h3>'
+                        + '<p style = "color:#808080; font-size:8pt">Filter by</p>'
+                        + '</div><div class="col-lg-12"><div class="col-lg-6" style="padding:0px">'
+                        + '<div class= "fontuser"><input type="text" id="Ssrch" class="textbox topsecondpanel" placeholder="Find a User">'
+                        + '<i style = "top: 20px" class= "fa fa-search fa-lg"></i>'
+                        + '</div></div><div class="col-lg-3">'
+                        + '<select class= "textbox topsecondpanel" onChange="loadusercountry()" id="country"><option>NG</option><option>US</option><option>GER</option><option>UK</option></select>'
+                        + '</div>'
+                        + '<div class= "col-lg-3"></div></div>'
+                        + '</div>'
+                        + '<div class="container-fluid responsive" id="inner" style="height: 300px; overflow-y: scroll;">'
+
+
+                        + '</div>');
+                    var inner = $('#inner');
+                    $.each(data.Results, function (index, element) {
+
+                        inner.append('<div class="row" style=" background-color: #FFFFFF">'
+                            + '<div class="col-lg-3" style="padding:5px;">'
+                            + '<img src="' + element.pic.medium + '" height="100" width="120" alt="Paris" class="center" style="border-radius:50%; border:5px solid #68d1a3" />'
+                            + '</div>'
+                            + '<div class="col-lg-9">'
+                            + '<p><h3 style="font-weight:700; font-size:14pt">' + element.name.first + ' ' + element.name.last + '</h3></p>'
+                            + '<p><h5 style="font-family: tahoma; font-style:italic; color: #a09b9b;">' + element.location.street.number + ' ' + element.location.street.name + ', ' + element.location.city + ', ' + element.location.state + '</h5></p>'
+                            + '<div class="row" style="margin-right:1%; color: #a9a9a9;">'
+                            + '<span style="float:left; padding: 8px 15px"><i class="fa fa-envelope"></i>&nbsp;&nbsp;' + element.email + '</span> &nbsp;&nbsp; <span style="float:left;  padding: 8px 15px"><i class="fa fa-phone"></i>&nbsp;&nbsp;' + element.phone + '</span> &nbsp;&nbsp;'
+                            + '<span style="float:right;">'
+                            + '<button onclick="GetUser(' + element.userID + ')" class="btn" style="background-color: #68d1a3;border-radius:8px; padding: 8px 15px"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>'
+                            + '</span>'
+                            + '</div>'
+                            + '</div>'
+                            + '</div>'
+                            + '<br />'
+                        );
+                    });
+                }
+
+            })
+
+            
+        }
+
+        $(function () {
+
+            $("#allusers").click(function () {
+                showLoading();
+                GetAllUsers(""); 
+                hideLoading();
+            });
+
+            $("#maleusers").click(function () {
+                showLoading();
+                GetAllUsers("Male");
+                hideLoading();
+            });
+
+            $("#femaleusers").click(function () {
+                showLoading();
+                GetAllUsers("Female");
+                hideLoading();
+            });
+
+            
+        })
+
+        function showLoading() {
+            var loading = $("#loading");
+            loading
+
+                .css({ visibility: "visible" })
+
+                .css({ opacity: "1" })
+
+                .css({ display: "block" })
+
+                ;
+
+        }
+
+        //hide loading bar
+
+        function hideLoading() {
+            var loading = $("#loading");
+            loading.fadeTo(1000, 0);
+            loading
+
+                .css({ display: "none" })
+
+        };
+
+        $(document).on({
+            ajaxStart: function () {
+                showLoading();
+            },
+            ajaxStop: function () {
+                hideLoading();
+            }
+        });
+
     </script>
 </head>
-<body  style="background-color: #111">
-    <div class="container" style="width: 70%; margin-top: 8%; background-color: #0a2742">
+<body style="background-color: #111">
+    <div class="overlay"></div>
+    <div class="spanner">
+        <div class="loader"></div>
+        <p>Uploading music file, please be patient.</p>
+    </div>
+    <div class="container" style="width: 80%; margin-top: 8%; background-color: #0a2742">
         <div class="row">
 
-            <div class="col-sm-6" style="height: 500px;">
+            <div class="col-sm-6" style="height: 500px; background-color:#0a2742">
                 <div class="row" style=" margin: 10%;padding: 10px;">
                     <h2 style="color: #efe6e6; ">Hello, </h2>
                     <p style="color: #efe6e6;">Welcome to your dashboard. Kindly sort through user base</p>
-                    <div style="padding: 14px;">
-                    <input type="text" class="searchBox" placeholder="Find a user..."
-       onsubmit="return false" name="srch">
+
+                    <div class="fontuser">
+                        <input type="text" id="srch" class="textbox" placeholder="Find a User" name="uname">
+                        <i style="top: 20px" class="fa fa-search fa-lg"></i>
                     </div>
+
+                    <div class="row">
+                        <h4 style="color: #FFFFFF; font-weight:700">Show Users</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4" style="">
+                            <button id="allusers" class="btn" style="background-color: #cc3978"><i class="fa fa-users fa-2x"></i></button>
+                            <h5 style="color:#efe6e6; margin-left:15%; font-weight:700; font-size:8pt">All Users</h5>
+                        </div>
+                        <div class="col-lg-4">
+                            <button id="maleusers" class="btn" style="background-color: #68d1a3"><i class="fa fa-male fa-2x"></i></button>
+                            <h5 style="color:#efe6e6; margin-left:10%; font-weight:700; font-size:8pt">Male Users</h5>
+                        </div>
+                        <div class="col-lg-4">
+                            <button id="femaleusers" class="btn" style="background-color: #3f56c1"><i class="fa fa-female fa-2x"></i></button>
+                            <h5 style="color:#efe6e6; margin-left:5%; font-weight:700; font-size:8pt">Female Users</h5>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-            <div class="col-sm-6" style="background-color: #ffffff; border-radius: 5px; padding: 20px; height: 500px">
-                <h3>Column 2</h3>
-                <p>Lorem ipsum dolor..</p>
+            <div class="col-sm-6" id="response" style="background-color: #f8f8f8; border-radius: 5px; padding: 20px; height: auto; overflow:hidden ">
+                <div id="loading">
+                    <img src="images/loading.gif" alt="Loading..." width="60" height="60" />
+                </div>
             </div>
 
         </div>

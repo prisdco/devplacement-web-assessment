@@ -194,7 +194,12 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="images\female1.jpg" />
+    <Content Include="images\female2.jpg" />
     <Content Include="images\images.jpg" />
+    <Content Include="images\loading.gif" />
+    <Content Include="images\male1.jpg" />
+    <Content Include="images\male2.jpg" />
     <Content Include="index.html" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
