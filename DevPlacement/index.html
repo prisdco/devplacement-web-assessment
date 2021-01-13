@@ -175,6 +175,42 @@
             });
         }
 
+        function Export_JSON_to_CSV(JSONString, ReportName, isShowHeader) {
+            var arrJsonData = typeof JSONString != 'object' ? JSON.parse(JSONString) : JSONString;
+            var CSV = '';
+            CSV += ReportName + '\r\n\n';
+            if (isShowHeader) {
+                var row = "";
+                for (var index in arrJsonData[0]) {
+                    row += index + ',';
+                }
+                row = row.slice(0, -1);
+                CSV += row + '\r\n';
+            }
+            for (var i = 0; i < arrJsonData.length; i++) {
+                var row = "";
+                for (var index in arrJsonData[i]) {
+                    row += '"' + arrJsonData[i][index] + '",';
+                }
+                row.slice(0, row.length - 1);
+                CSV += row + '\r\n';
+            }
+            if (CSV == '') {
+                alert("Invalid JsonData");
+                return;
+            }
+            var fileName = "CSV_";
+            fileName += ReportName.replace(/ /g, "_");
+            var uri = 'Data:text/csv;charset=utf-8,' + escape(CSV);
+            var link = document.createElement("a");
+            link.href = uri;
+            link.style = "visibility:hidden";
+            link.download = fileName + ".csv";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
         function GetUser(id) {
             var url = "";
             if (id == "" || id == null) {
@@ -349,6 +385,21 @@
                 hideLoading();
             });
 
+            $("#export").click(function () {
+                var JsonData = displayRecords;
+                var ReportName = "csvdata";
+                if (ReportName == '') {
+                    alert("Please Enter Report Name.");
+                    return;
+                }
+                if (JsonData == '') {
+                    alert("Empty JSON string not allow.");
+                    return;
+                }
+
+                Export_JSON_to_CSV(JsonData, ReportName, true);
+            });
+
 
         })
 
@@ -431,6 +482,7 @@
                 <div id="pager">
                     <ul id="pagination" class="pagination-sm"></ul>
                 </div>
+                <button id="export" class="btn" style="background-color: #17a969">Export Data</button>
             </div>    
             
         </div>
