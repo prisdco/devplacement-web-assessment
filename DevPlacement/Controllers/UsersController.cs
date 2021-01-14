@@ -104,7 +104,7 @@ namespace DevPlacement.Controllers
                 {
                     err.status = "Failed";
                     err.Results = "Null";
-                    return Content(HttpStatusCode.NoContent, err);
+                    return Content(HttpStatusCode.BadRequest, err);
                 }
                 else
                 {
@@ -119,7 +119,7 @@ namespace DevPlacement.Controllers
             {
                 err.status = "Failed";
                 err.Results = ex.Message;
-                return Content(HttpStatusCode.NoContent, err);
+                return Content(HttpStatusCode.NotFound, err);
             }
 
         }
